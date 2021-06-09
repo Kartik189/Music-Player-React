@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import Artist from './Artist';
 import Tracks from './Audio';
+import Search from './Search';
 
 const url="https://spotify-api-wrapper.appspot.com";
 
 class App extends Component {
 
-    state = { artistQuery: '' , artist: null , tracks: []};
+    state = { artist: null , tracks: [] };
 
-    updateArtistQuery = (event) => {
-        this.setState({artistQuery:event.target.value});
+    componentDidMount() {
+        this.searchArtist('Bruno');
     }
 
-    searchArtist = () => {
-        if(this.state.artistQuery.length!=0)
+    searchArtist = (artistQuery) => {
+        if(artistQuery.length!=0)
         {
-            fetch(`${url}/artist/${this.state.artistQuery}`)
+            fetch(`${url}/artist/${artistQuery}`)
             .then(response => response.json())
             .then(json => {
                 
@@ -23,7 +24,6 @@ class App extends Component {
                 {
                     const artist=json.artists.items[0];
                     this.setState({artist});
-                    console.log(artist);
                     fetch(`${url}/artist/${artist.id}/top-tracks`)
                     .then(response => response.json())
                     .then(json => this.setState({tracks: json.tracks}))
@@ -33,27 +33,15 @@ class App extends Component {
         }
     }
 
-    handleKeyPress = event => {
-        if(event.key=='Enter')
-            this.searchArtist();
-    }
-
     render() {
         return(
             <div>
-                <div>
-                    <h2>Music Master</h2>
-                    <input 
-                        onChange={this.updateArtistQuery} 
-                        placeholder='Search for an Artist' 
-                        onKeyPress={this.handleKeyPress}
-                    />
-                    <button onClick={this.searchArtist}>Search</button>
-                </div>   
+                    <h2>Music Master</h2> 
+                <Search searchTheArtist={this.searchArtist}/>
                 <Artist artist={this.state.artist}/>
                 <Tracks tracks={this.state.tracks}></Tracks>
             </div>
-        )
+        );
     }
 }
 

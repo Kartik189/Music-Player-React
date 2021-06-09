@@ -25,6 +25,14 @@ class Tracks extends Component{
         }
     }
 
+    isThisPlaying(url) {
+        if(url==null)
+            return <span><strong>N/A</strong></span>
+        if(this.state.play && this.state.playingUrl==url)
+            return <span><center><strong>| |</strong></center></span>;
+        return <span><center>&#9654;</center></span>;
+    }
+
     render() {
         const { tracks } = this.props;
         return(
@@ -34,9 +42,10 @@ class Tracks extends Component{
                     tracks.map(track => {
                         const {id , name , album , preview_url } =track;
                         return(
-                            <div key={id} onClick={this.playAudio(preview_url)} style={{display: 'inline-block', margin: 30}}> 
-                                <img src={album.images[0].url} alt='track-image' style={{height:200 ,width:200, borderRadius:100}}/>
-                                <p>{name}</p>
+                            <div key={id} onClick={this.playAudio(preview_url)} className="track"> 
+                                <img src={album.images[0].url} alt='track-image' className="track-img" />
+                                <p className="artist-name" >{name}</p>
+                                <p className="play-pause">{this.isThisPlaying(preview_url)}</p>
                             </div>
                         );
                     })
